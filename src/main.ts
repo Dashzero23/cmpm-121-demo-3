@@ -46,7 +46,6 @@ let clearedLocations = new Set();
 let playerCoins: Coins[] = [];
 const currentMap: Board = new Board();
 const cacheList: Map<string, Cache> = new Map<string, Cache>();
-const momentos: Map<Cell, string> = new Map<Cell, string>();
 const cacheMap: Map<Cell, [leaflet.Layer, boolean]> = new Map<
   Cell,
   [leaflet.Layer, boolean]
@@ -220,7 +219,8 @@ function pitSpawn() {
     for (let j = -NEIGHBORHOOD_SIZE; j < NEIGHBORHOOD_SIZE; j++) {
       const lat = playerMarker.getLatLng().lat + i * TILE_DEGREES;
       const lng = playerMarker.getLatLng().lng + j * TILE_DEGREES;
-      const key = `${lat}_${lng}`;
+      const key = `${lat.toFixed(5)}_${lng.toFixed(5)}`;
+      //clearedLocations.add(key);
 
       if (
         Math.random() * 100 <= PIT_SPAWN_PROBABILITY &&
@@ -229,7 +229,6 @@ function pitSpawn() {
         makePit(lat, lng);
       }
 
-      // Add the location to the cleared set, regardless of whether a pit is spawned
       clearedLocations.add(key);
     }
   }
@@ -238,29 +237,29 @@ function pitSpawn() {
 pitSpawn();
 
 function updateMap() {
-  console.log("Updating map...");
+  //console.log("Updating map...");
 
   const playerCell: Cell = currentMap.getGridCell(
     playerMarker.getLatLng().lat,
     playerMarker.getLatLng().lng
   );
 
-  console.log("Player Cell:", playerCell);
+  //console.log("Player Cell:", playerCell);
 
   cacheMap.forEach((cache, cell) => {
-    console.log("Cache Cell:", cell);
+    //console.log("Cache Cell:", cell);
 
     const distanceX = Math.abs(cell.x - playerCell.x);
     const distanceY = Math.abs(cell.y - playerCell.y);
 
-    console.log("Distance X:", distanceX);
-    console.log("Distance Y:", distanceY);
+    //console.log("Distance X:", distanceX);
+    //console.log("Distance Y:", distanceY);
 
     const inRangeX = distanceX <= NEIGHBORHOOD_SIZE;
     const inRangeY = distanceY <= NEIGHBORHOOD_SIZE;
 
-    console.log("In Range X:", inRangeX);
-    console.log("In Range Y:", inRangeY);
+    //console.log("In Range X:", inRangeX);
+    //console.log("In Range Y:", inRangeY);
 
     if (!inRangeX || !inRangeY) {
       // If outside the NEIGHBORHOOD_SIZE in either X or Y direction, remove it
@@ -277,7 +276,7 @@ function updateMap() {
     }
   });
 
-  console.log("Map updated!");
+  //console.log("Map updated!");
 }
 
 south?.addEventListener("click", () => {
