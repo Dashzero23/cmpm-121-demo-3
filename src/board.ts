@@ -1,9 +1,11 @@
+// done with great help from Nhan Nguyen
+// https://github.com/Ataru2002
 export interface Cell {
   x: number;
   y: number;
 }
 
-interface Coins {
+export interface Coins {
   coord: Cell;
   serial: number;
 }
@@ -31,10 +33,15 @@ export class Board {
   printBoard() {
     console.log(this.oldCells);
   }
+
+  clearBoard() {
+    this.oldCells.clear();
+  }
 }
 
 export class Cache {
   coinList: Coins[];
+  formatList: string[];
   cell: Cell;
   description: string;
 
@@ -42,6 +49,7 @@ export class Cache {
     this.description = `${cell.x}_${cell.y}`;
     this.cell = cell;
     this.coinList = [];
+    this.formatList = [];
   }
 
   addCoin() {
@@ -50,6 +58,8 @@ export class Cache {
         ? this.coinList[this.coinList.length - 1].serial + 1
         : 0;
     this.coinList.push({ coord: this.cell, serial: Serial });
+    this.formatList.push(`${this.cell.x}#${this.cell.y}#${Serial}`);
+    this.description = this.formatList.join(",");
   }
 
   format(): string[] {
@@ -68,5 +78,11 @@ export class Cache {
 
   fromMomento(momento: string) {
     this.description = momento;
+    this.formatList = momento.split(",");
+    this.coinList = [];
+    this.formatList.forEach((instance) => {
+      const tempArr: string[] = instance.split("#");
+      this.coinList.push({ coord: this.cell, serial: Number(tempArr[2]) });
+    });
   }
 }
